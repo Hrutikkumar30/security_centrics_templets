@@ -1,3 +1,67 @@
+// ── CMS EDIT SHORTCUT (production-safe delegated handler) ──
+(() => {
+    const DEBUG =
+        new URLSearchParams(window.location.search).get('cms_debug') === 'true' ||
+        localStorage.getItem('cms_debug') === 'true';
+
+    const log = (...args) => {
+        if (!DEBUG) return;
+        try { console.log('[CMS]', ...args); } catch (_) {}
+    };
+
+    const isMacLike = () => /Mac|iPhone|iPad|iPod/i.test(navigator.platform || navigator.userAgent || '');
+
+    const hasToggleModifier = (e) => {
+        // Requirement: ctrlKey for Win/Linux, metaKey for Mac.
+        // Note: ctrl+click on macOS often maps to right-click, so metaKey is the reliable shortcut there.
+        return isMacLike() ? !!e.metaKey : !!e.ctrlKey;
+    };
+
+    const attemptToggle = (remaining = 10) => {
+        if (typeof window.CMS_TOGGLE === 'function') {
+            log('Toggling edit mode');
+            window.CMS_TOGGLE();
+            return;
+        }
+        if (remaining <= 0) {
+            log('CMS_TOGGLE not ready; giving up');
+            return;
+        }
+        log('CMS_TOGGLE not ready; retrying...', remaining);
+        setTimeout(() => attemptToggle(remaining - 1), 100);
+    };
+
+    document.addEventListener(
+        'click',
+        (e) => {
+            const toggleEl = e.target && e.target.closest ? e.target.closest('[data-cms-toggle="true"]') : null;
+            if (!toggleEl) return;
+
+            // Activate ONLY on explicit shortcut (prevents accidental mobile taps).
+            if (!hasToggleModifier(e)) {
+                log('Toggle element clicked without modifier; ignored');
+                return;
+            }
+
+            // Safety: ignore if event is synthetic/blocked; still allow if undefined (older Safari).
+            if (typeof e.isTrusted === 'boolean' && e.isTrusted === false) {
+                log('Untrusted click; ignored');
+                return;
+            }
+
+            e.preventDefault();
+            e.stopPropagation();
+            if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
+
+            log('Shortcut detected', {ctrlKey: !!e.ctrlKey, metaKey: !!e.metaKey});
+            attemptToggle();
+        },
+        true // capture to survive other handlers
+    );
+
+    log('Delegated shortcut listener attached');
+})();
+
 document.addEventListener('DOMContentLoaded', () => {
     // ── INLINE CMS ARCHITECTURE ──
     const CMS = {
