@@ -1739,6 +1739,11 @@ body.is-editing {
   .footer-nav-sc { flex-wrap: wrap; gap: 60px 40px; }
 }
 @media (max-width: 768px) {
+  html, body { overflow-x: hidden; }
+  /* Keep partner tiles readable on phones (match 2-column screenshot layout) */
+  .partners-grid-sc { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .partners-row-centered { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+
   .footer-bottom-sc { flex-direction: column; gap: 32px; text-align: center; }
   .footer-badges-sc { flex-wrap: wrap; justify-content: center; }
   .contact-details-row { margin-bottom: 40px; }
@@ -1754,6 +1759,95 @@ body.is-editing {
   }
   
   .why-grid-sc { grid-template-columns: 1fr; gap: 32px; }
+
+  /* Collapse other multi-column blocks on mobile for consistent layout */
+  .cmmc-grid-alt { grid-template-columns: 1fr; gap: 32px; }
+  .controls-summary { grid-template-columns: 1fr; gap: 16px; }
+  .savings-grid { grid-template-columns: 1fr; }
+  .included-grid { grid-template-columns: 1fr; }
+
+  /* Controls rows: prevent overflow on small screens */
+  .controls-header { padding: 20px 24px; }
+  .controls-header-text h3 { font-size: 24px; }
+  .controls-total .num { font-size: 48px; }
+  .controls-legend-alt {
+    padding: 12px 24px;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .controls-list-alt { padding: 24px; }
+  .ctrl-row-alt { grid-template-columns: 100px 1fr 32px; gap: 12px; }
+  .ctrl-bar-wrap { height: 22px; }
+  .ctrl-val { font-size: 16px; }
+
+  .ctrl-table { padding: 20px 24px; }
+  .ctrl-row { grid-template-columns: 140px 1fr 32px; gap: 12px; }
+
+  /* GCC comparison table: keep 3 cols, enable horizontal scroll */
+  .gcc-table-wrap {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .gcc-table-head, .gcc-row { min-width: 860px; }
+
+  /* Defensive: prevent any block from widening viewport */
+  .experts-connector,
+  .marketing-card,
+  .controls-card,
+  .included-card,
+  .shield-container {
+    max-width: 100%;
+  }
+
+  /* HERO visual: prevent fixed-size shield from overflowing on phones */
+  .shield-container {
+    width: min(320px, 88vw);
+    height: min(320px, 88vw);
+    margin: 0 auto;
+  }
+  .status-badge-alt {
+    position: static;
+    margin: 16px auto 0;
+    justify-content: center;
+    width: fit-content;
+    max-width: 100%;
+  }
+
+  /* Marketing banner: avoid cut-offs / side overflow */
+  .marketing-banner { padding: 0 24px 40px; }
+  .marketing-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 24px;
+  }
+  .marketing-link { margin-left: 0; }
+
+  /* Experts connector strip: wrap chips + keep result full-width (no truncation) */
+  .experts-connector {
+    padding: 20px;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .conn-chip {
+    font-size: 10px;
+    letter-spacing: 1px;
+    text-align: center;
+    flex: 1 1 auto;
+    min-width: 140px;
+  }
+  .conn-plus { font-size: 18px; }
+  .conn-result {
+    width: 100%;
+    text-align: center;
+    padding: 12px 16px;
+    font-size: 12px;
+    letter-spacing: 1px;
+  }
 }
 
 @media (max-width: 968px) {
